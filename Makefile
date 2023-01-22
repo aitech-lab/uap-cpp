@@ -1,6 +1,6 @@
 ifndef KEEP_ENV_VARS
 LDFLAGS += -lre2 -lyaml-cpp
-CXXFLAGS += -std=c++0x -Wall -Werror -g -fPIC -O3
+CXXFLAGS += -std=c++17 -Wall -Werror -g -fPIC -O3
 endif
 
 # wildcard object build target
@@ -24,6 +24,12 @@ libuaparser_cpp.so: $(OBJECT_FILES)
 
 UaParserTest: libuaparser_cpp.a UaParserTest.o
 	$(CXX) $^ -o $@ libuaparser_cpp.a $(LDFLAGS) -lgtest -lpthread
+
+parse_ua: libuaparser_cpp.a parse_ua.o
+	$(CXX) $^ -o $@ libuaparser_cpp.a $(LDFLAGS) -lpthread
+
+parse_ua_simple: libuaparser_cpp.a parse_ua_simple.o
+	$(CXX) $^ -o $@ libuaparser_cpp.a $(LDFLAGS) -lpthread
 
 test: UaParserTest libuaparser_cpp.a
 	./UaParserTest
