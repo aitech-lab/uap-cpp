@@ -12,19 +12,19 @@ for line in sys.stdin:
         os = ua.get("os",{})
         device = ua.get("device",{})
         fields = [
-	    browser.get("family"     , ""),
-	    browser.get("major"      , ""),
-	    browser.get("minor"      , ""),
-	    browser.get("patch"      , ""),
-	    browser.get("patch_minor", ""),
-	    os     .get("family"     , ""),
-	    os     .get("major"      , ""),
-	    os     .get("minor"      , ""),
-	    os     .get("patch"      , ""),
-	    os     .get("patch_minor", ""),
-	    device .get("family"     , ""),
-	    device .get("brand"      , ""),
-	    device .get("model"      , ""),
+            browser.get("family"     , ""),
+            browser.get("major"      , ""),
+            browser.get("minor"      , ""),
+            browser.get("patch"      , ""),
+            browser.get("patch_minor", ""),
+            os     .get("family"     , ""),
+            os     .get("major"      , ""),
+            os     .get("minor"      , ""),
+            os     .get("patch"      , ""),
+            os     .get("patch_minor", ""),
+            device .get("family"     , ""),
+            device .get("brand"      , ""),
+            device .get("model"      , ""),
         ]
         fields = ["" if f is None else f for f in fields]
         sys.stdout.write("\t".join(fields))
