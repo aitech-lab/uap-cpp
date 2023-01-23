@@ -6,7 +6,7 @@ IF(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
     SET(CMAKE_BUILD_TYPE Release)
 ENDIF(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -Werror -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Werror -fPIC")
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 
@@ -58,3 +58,6 @@ add_executable(bench ${BENCH_SOURCES} $<TARGET_OBJECTS:objlib>)
 set_target_properties(bench PROPERTIES OUTPUT_NAME UaParserBench)
 
 target_link_libraries(bench re2 yaml-cpp pthread)
+
+add_executable(parse parse.cpp base64.cpp)
+target_link_libraries(parse uap-cpp-static re2 yaml-cpp pthread)

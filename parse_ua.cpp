@@ -101,7 +101,7 @@ inline ThreadPool::~ThreadPool()
 
 #include "UaParser.h"
 using namespace uap_cpp;
-UserAgentParser p("uap-core/regexes.yaml");
+UserAgentParser p("regexes.yaml");
 
 const size_t n = 100000;
 vector<string> b(n);

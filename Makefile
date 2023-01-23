@@ -31,6 +31,9 @@ parse_ua: libuaparser_cpp.a parse_ua.o
 parse_ua_simple: libuaparser_cpp.a parse_ua_simple.o
 	$(CXX) $^ -o $@ libuaparser_cpp.a $(LDFLAGS) -lpthread
 
+parse: libuaparser_cpp.a parse.o base64.o
+	$(CXX) $^ -o $@ libuaparser_cpp.a $(LDFLAGS) -lpthread
+
 test: UaParserTest libuaparser_cpp.a
 	./UaParserTest
 
