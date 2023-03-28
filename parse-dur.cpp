@@ -33,6 +33,7 @@ UserAgentParser uap("regexes.yaml");
 
 inline void parse_fp(stringstream& ss, json fp) {
     string s;
+    
     // c0 = unpack("d", comps[0]) // double
     // c1 = unpack("i", comps[1]) // signed int
     // c2 = unpack("I", comps[2]) // unsigned int 
@@ -63,6 +64,7 @@ inline void parse_fp(stringstream& ss, json fp) {
     for(int32_t  v : c1) ss << "\t" << v;
     for(uint32_t v : c2) ss << "\t" << v;
     for(uint8_t  v : c3) ss << "\t" << unsigned(v);
+    
 }
 
 inline void parse_json(stringstream& ss, string data) {
@@ -80,7 +82,9 @@ inline void parse_json(stringstream& ss, string data) {
 
     j = json::parse(data);
     if (!j["err"].is_string()) {
-        parse_fp(ss, j["fp"]);
+        // parse_fp(ss, j["fp"]);
+        int d = j["dur"];
+        ss << "\t" << d;
     }
 
 }
@@ -152,6 +156,7 @@ inline void process_stream(istream& st) {
     };
 
 }
+
 int main(int argc, char* argv[])
 {
     if(argc>1) {
