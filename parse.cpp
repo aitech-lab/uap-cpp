@@ -22,7 +22,6 @@ using json=nlohmann::json;
 // gzip
 #include "zstr.hpp"
 
-
 // gcc hash seed for murmur
 // https://github.com/gcc-mirror/gcc/blob/41d6b10e96a1de98e90a7c0378437c3255814b16/libstdc%2B%2B-v3/include/bits/functional_hash.h#L191
 #define SEED 0xc70f6907
@@ -31,8 +30,87 @@ using json=nlohmann::json;
 // UserAgentParser p("../uap-core/regexes.yaml");
 UserAgentParser uap("regexes.yaml");
 
+
+// {
+// "_http_headers":{
+//    "Accept":["*/*"],
+//    "Accept-Encoding":["gzip, deflate, br"],
+//    "Accept-Language":["ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7"],
+//    "Connection":["close"],
+//    "Content-Length":["2607"],
+//    "Content-Type":["application/json;charset=UTF-8"],
+//    "Origin":["https://domain.org"],
+//    "Referer":["https://domain.org/"],
+//    "Sec-Ch-Ua":["\\"Google Chrome\\";v=\\"111\\", \\"Not(A:Brand\\";v=\\"8\\", \\"Chromium\\";v=\\"111\\"],
+//    "Sec-Ch-Ua-Mobile":["?1"],
+//    "Sec-Ch-Ua-Platform":["\\"Android\\"],
+//    "Sec-Fetch-Dest":["empty"],
+//    "Sec-Fetch-Mode":["cors"],
+//    "Sec-Fetch-Site":["cross-site"],
+//    "User-Agent":["Mozilla/5.0 (Linux; Android 12; SM-A315F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Mobile Safari/537.36"],
+//    "X-Add-Http-Headers":["1"],
+//    "X-Forwarded-For":["77.45.187.11"],
+//    "X-Pid":["2890426"],
+//    "X-User-Id":["oYB32eJDRg8hrzCyvCovEA"]
+//    }
+
+
+struct url {
+  public:
+    url(const string& url_s) {
+      this->parse(url_s);
+    }
+    string protocol, host, path, query;
+  private:
+    void parse(const string& url_s);
+};
+
+void url::parse(const string& url_s) {
+    
+    const string prot_end("://");
+    string::const_iterator prot_i = search(
+        url_s.begin(), 
+        url_s.end(), 
+        prot_end.begin(), 
+        prot_end.end());
+
+    protocol.reserve(distance(url_s.begin(), prot_i));
+    transform(
+        url_s.begin(), 
+        prot_i,
+        back_inserter(protocol),
+        [](unsigned char c) { return tolower(c); }
+    ); // protocol is icase
+    if( prot_i == url_s.end()) return;
+    
+    advance(prot_i, prot_end.length());
+    string::const_iterator path_i = find(prot_i, url_s.end(), '/');
+    host.reserve(distance(prot_i, path_i));
+    transform(
+        prot_i, 
+        path_i,
+        back_inserter(host),
+        [](unsigned char c) { return tolower(c); }
+    ); // host is icase
+    
+    string::const_iterator query_i = find(path_i, url_s.end(), '?');
+    path.assign(path_i, query_i);
+    if(query_i != url_s.end()) ++query_i;
+
+    query.assign(query_i, url_s.end());
+}
+
+inline void parse_header(stringstream& ss, json header) {
+	// parse and allocate url object.
+	url u(header["Referer"][0]);
+	ss << "\t" << u.host;
+	ss << "\t" << u.path;
+}
+
 inline void parse_fp(stringstream& ss, json fp) {
+
     string s;
+    
     // c0 = unpack("d", comps[0]) // double
     // c1 = unpack("i", comps[1]) // signed int
     // c2 = unpack("I", comps[2]) // unsigned int 
@@ -63,7 +141,9 @@ inline void parse_fp(stringstream& ss, json fp) {
     for(int32_t  v : c1) ss << "\t" << v;
     for(uint32_t v : c2) ss << "\t" << v;
     for(uint8_t  v : c3) ss << "\t" << unsigned(v);
+
 }
+
 
 inline void parse_json(stringstream& ss, string data) {
     
@@ -80,7 +160,8 @@ inline void parse_json(stringstream& ss, string data) {
 
     j = json::parse(data);
     if (!j["err"].is_string()) {
-        parse_fp(ss, j["fp"]);
+        parse_header(ss, j["_http_headers"]);
+        parse_fp    (ss, j["fp"]);
     }
 
 }
@@ -133,7 +214,7 @@ inline void parse_line(stringstream& ss, string line) {
        << "\t" << tokens[2]
        << "\t" << tokens[3]
     ;
-    parse_ua(ss, tokens[4]);
+    parse_ua  (ss, tokens[4]);
     parse_json(ss, tokens[5]);
     ss << "\t" << tokens[6];
 }
