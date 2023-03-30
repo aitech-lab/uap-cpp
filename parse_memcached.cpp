@@ -167,7 +167,7 @@ inline void parse_fp(stringstream& ss, json fp) {
     for (int&i : metrics_v01::fp_unstable_block_2) unstable_hash_ss << c2[i] << ",";
     string unstable_hash = ss.str();
     fp_unstable_hash = MurmurHash2(unstable_hash.data(), unstable_hash.size(), SEED);
-    
+
     ss << "\t" << fp_hash;
     ss << "\t" << fp_stable_hash;
     ss << "\t" << fp_unstable_hash;
