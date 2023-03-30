@@ -52,6 +52,7 @@ target_link_libraries(tests re2 yaml-cpp gtest pthread)
 
 
 set(BENCH_SOURCES benchmarks/UaParserBench.cpp)
+set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
 
 add_executable(bench ${BENCH_SOURCES} $<TARGET_OBJECTS:objlib>)
 set_target_properties(bench PROPERTIES OUTPUT_NAME UaParserBench)
@@ -60,6 +61,9 @@ target_link_libraries(bench re2 yaml-cpp pthread)
 
 add_executable(parse parse.cpp base64.cpp MurmurHash2.cpp)
 target_link_libraries(parse uap-cpp-static re2 yaml-cpp pthread z)
+
+add_executable(parse_memcached parse_memcached.cpp base64.cpp MurmurHash2.cpp)
+target_link_libraries(parse_memcached uap-cpp-static re2 yaml-cpp pthread z)
 
 add_executable(parse-dur parse-dur.cpp base64.cpp MurmurHash2.cpp)
 target_link_libraries(parse-dur uap-cpp-static re2 yaml-cpp pthread z)

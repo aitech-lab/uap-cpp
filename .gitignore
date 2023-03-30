@@ -131,3 +131,5 @@ CMakeFiles/uap-cpp-static.dir/link.txt
 CMakeFiles/uap-cpp-static.dir/progress.make
 CMakeCache.txt
 cmake_install.cmake
+parse
+UaParserBench
