@@ -104,15 +104,21 @@ void url::parse(const string& url_s) {
 }
 
 
-inline void parse_header(stringstream& ss, json header) {
+inline void parse_header(
+    stringstream& key_ss, 
+    stringstream& value_ss, 
+    json header) {
 	// parse and allocate url object.
 	url u(header["Referer"][0]);
-	ss << "\t" << u.host;
-	ss << "\t" << u.path;
+	value_ss << "\t" << u.host;
+	value_ss << "\t" << u.path;
 }
 
 
-inline void parse_fp(stringstream& ss, json fp) {
+inline void parse_fp(
+    stringstream& key_ss,
+    stringstream& value_ss,
+    json fp) {
 
     string s;
     
@@ -165,22 +171,25 @@ inline void parse_fp(stringstream& ss, json fp) {
     stringstream unstable_hash_ss;
     for (int&i : metrics_v01::fp_unstable_block_0) unstable_hash_ss << c0[i] << ",";
     for (int&i : metrics_v01::fp_unstable_block_2) unstable_hash_ss << c2[i] << ",";
-    string unstable_hash = ss.str();
+    string unstable_hash = unstable_hash_ss.str();
     fp_unstable_hash = MurmurHash2(unstable_hash.data(), unstable_hash.size(), SEED);
 
-    ss << "\t" << fp_hash;
-    ss << "\t" << fp_stable_hash;
-    ss << "\t" << fp_unstable_hash;
+    key_ss << "\t" << fp_hash;
+    key_ss << "\t" << fp_stable_hash;
+    key_ss << "\t" << fp_unstable_hash;
     
-    for(double   v : c0) ss << "\t" << v;
-    for(int32_t  v : c1) ss << "\t" << v;
-    for(uint32_t v : c2) ss << "\t" << v;
-    for(uint8_t  v : c3) ss << "\t" << unsigned(v);
+    for(double   v : c0) value_ss << "\t" << v;
+    for(int32_t  v : c1) value_ss << "\t" << v;
+    for(uint32_t v : c2) value_ss << "\t" << v;
+    for(uint8_t  v : c3) value_ss << "\t" << unsigned(v);
 
 }
 
 
-inline void parse_json(stringstream& ss, string data) {
+inline void parse_json(
+    stringstream& key_ss, 
+    stringstream& value_ss, 
+    string data) {
     
     // unescape double escaped jsons
     if(data[0] == '"') {
@@ -195,13 +204,17 @@ inline void parse_json(stringstream& ss, string data) {
 
     j = json::parse(data);
     if (!j["err"].is_string()) {
-        parse_header(ss, j["_http_headers"]);
-        parse_fp    (ss, j["fp"]);
+        parse_header(key_ss, value_ss, j["_http_headers"]);
+        parse_fp    (key_ss, value_ss, j["fp"]);
     }
 
 }
 
-inline void parse_ua(stringstream& ss, string data) {
+
+inline void parse_ua(
+    stringstream& key_ss, 
+    stringstream& value_ss, 
+    string data) {
 
     uint32_t ua_hash = MurmurHash2(data.data(), data.size(), SEED);
     string ua_chars  = regex_replace(data, regex("[^A-za-z]*"), "");
@@ -209,14 +222,17 @@ inline void parse_ua(stringstream& ss, string data) {
     string ua_digits = regex_replace(data, regex("[^0-9]*"), "");
     uint32_t ua_digits_hash = MurmurHash2(ua_digits.data(), ua_digits.size(), SEED);
     
-    ss << "\t" << ua_hash
-       << "\t" << ua_chars_hash
-       << "\t" << ua_digits_hash
+    key_ss
+        // << "\t" << ua_hash
+        << ua_hash
+        << "\t" << ua_chars_hash
+        << "\t" << ua_digits_hash
     ;
 
     auto ua = uap.parse(data);
     
-    ss  << "\t" << ua.browser.family
+    value_ss 
+        << "\t" << ua.browser.family
         << "\t" << ua.browser.major
         << "\t" << ua.browser.minor
         << "\t" << ua.browser.patch
@@ -228,12 +244,14 @@ inline void parse_ua(stringstream& ss, string data) {
         << "\t" << ua.os.patch_minor
         << "\t" << ua.device.family
         << "\t" << ua.device.brand
-        << "\t" << ua.device.model
-    ;
+        << "\t" << ua.device.model;
 }
 
 
-inline void parse_line(stringstream& ss, string line) {
+inline void parse_line(
+    stringstream& key_ss, 
+    stringstream& value_ss, 
+    string line) {
 
     istringstream is(line);
     vector<string> tokens;
@@ -247,24 +265,36 @@ inline void parse_line(stringstream& ss, string line) {
     if(tokens.size()==6) tokens.push_back("");
     if(tokens.size()!=7) return;
     
-    ss         << tokens[0] // first
-       << "\t" << tokens[1]
-       << "\t" << tokens[2]
-       << "\t" << tokens[3]
-    ;
-    parse_ua  (ss, tokens[4]);
-    parse_json(ss, tokens[5]);
-    ss << "\t" << tokens[6];
+    value_ss   << tokens[0]  // uuid
+       << "\t" << tokens[1]  // ts
+       << "\t" << tokens[2]; // uuid
+    
+    parse_ua  (key_ss, value_ss, tokens[4]);
+    parse_json(key_ss, value_ss, tokens[5]);
+    value_ss << "\t" << tokens[6];
+
+    key_ss << "\t" << tokens[3]; // ip
+
 }
 
 
 inline void process_stream(istream& st) {
     for(string line; getline(st, line);) {
-        stringstream ss;
-        ss << setprecision(17);
+        stringstream 
+            key_ss, 
+            value_ss;
+
+        key_ss   << setprecision(17);
+        value_ss << setprecision(17);
+        
         try {
-            parse_line(ss, line);
-            cout << ss.str() << endl;
+            parse_line(key_ss, value_ss, line);
+            string value = value_ss.str();
+            // size_t value_size = value.size() * sizeof(std::string::value_type);
+            // set key flags exptime bytes [noreply] 
+            // value 
+            // set key_1 0 86400 5\r\nabcde\r\n'
+            cout << key_ss.str() << "\t" << value << "\n";
         }
         catch (const exception &exc) {
             cerr << exc.what() << endl;
