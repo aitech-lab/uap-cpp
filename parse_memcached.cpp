@@ -206,7 +206,12 @@ inline void parse_json(
     if (!j["err"].is_string()) {
         parse_header(key_ss, value_ss, j["_http_headers"]);
         parse_fp    (key_ss, value_ss, j["fp"]);
-    }
+    } else {
+        parse_header(key_ss, value_ss, j["_http_headers"]);
+        key_ss << "\t" << 0; // fp_hash;
+        key_ss << "\t" << 0; // fp_stable_hash;
+        key_ss << "\t" << 0; // fp_unstable_hash;
+    } 
 
 }
 
@@ -268,7 +273,7 @@ inline void parse_line(
     istringstream is(line);
     vector<string> tokens;
     string token;
-
+    
     while(getline(is, token, '\t')) {
         if(!token.empty()) {
             tokens.push_back(token);
