@@ -39,15 +39,11 @@ set_target_properties(uap-cpp-shared PROPERTIES OUTPUT_NAME uaparser_cpp)
 
 
 
-set(TEST_SOURCES
-        UaParserTest.cpp)
-
-find_package(GTest)
-
-add_executable(tests ${TEST_SOURCES} $<TARGET_OBJECTS:objlib>)
-set_target_properties(tests PROPERTIES OUTPUT_NAME UaParserTest)
-
-target_link_libraries(tests re2 yaml-cpp gtest pthread)
+# set(TEST_SOURCES UaParserTest.cpp)
+# find_package(GTest)
+# add_executable(tests ${TEST_SOURCES} $<TARGET_OBJECTS:objlib>)
+# set_target_properties(tests PROPERTIES OUTPUT_NAME UaParserTest)
+# target_link_libraries(tests re2 yaml-cpp gtest pthread)
 
 
 

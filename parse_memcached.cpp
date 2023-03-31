@@ -247,6 +247,18 @@ inline void parse_ua(
         << "\t" << ua.device.model;
 }
 
+inline void parse_ip(
+    stringstream& key_ss, 
+    stringstream& value_ss, 
+    string ip) {
+    
+    string net24 = regex_replace(ip, regex("\\.\\d*$"), ".0");
+    string net16 = regex_replace(ip, regex("\\.\\d+\\.\\d+$"), ".0.0");
+    key_ss << "\t" << ip;
+    key_ss << "\t" << net24;
+    key_ss << "\t" << net16;
+
+}
 
 inline void parse_line(
     stringstream& key_ss, 
@@ -273,7 +285,8 @@ inline void parse_line(
     parse_json(key_ss, value_ss, tokens[5]);
     value_ss << "\t" << tokens[6];
 
-    key_ss << "\t" << tokens[3]; // ip
+    // key_ss << "\t" << tokens[3]; // ip
+    parse_ip(key_ss, value_ss, tokens[3]);
 
 }
 

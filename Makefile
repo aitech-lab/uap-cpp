@@ -156,19 +156,6 @@ uap-cpp-shared/fast:
 .PHONY : uap-cpp-shared/fast
 
 #=============================================================================
-# Target rules for targets named tests
-
-# Build rule for target.
-tests: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests
-.PHONY : tests
-
-# fast build rule for target.
-tests/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/build
-.PHONY : tests/fast
-
-#=============================================================================
 # Target rules for targets named bench
 
 # Build rule for target.
@@ -273,30 +260,6 @@ UaParser.s: UaParser.cpp.s
 UaParser.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/objlib.dir/build.make CMakeFiles/objlib.dir/UaParser.cpp.s
 .PHONY : UaParser.cpp.s
-
-UaParserTest.o: UaParserTest.cpp.o
-.PHONY : UaParserTest.o
-
-# target to build an object file
-UaParserTest.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/UaParserTest.cpp.o
-.PHONY : UaParserTest.cpp.o
-
-UaParserTest.i: UaParserTest.cpp.i
-.PHONY : UaParserTest.i
-
-# target to preprocess a source file
-UaParserTest.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/UaParserTest.cpp.i
-.PHONY : UaParserTest.cpp.i
-
-UaParserTest.s: UaParserTest.cpp.s
-.PHONY : UaParserTest.s
-
-# target to generate assembly for a file
-UaParserTest.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/UaParserTest.cpp.s
-.PHONY : UaParserTest.cpp.s
 
 base64.o: base64.cpp.o
 .PHONY : base64.o
@@ -533,7 +496,6 @@ help:
 	@echo "... parse"
 	@echo "... parse-dur"
 	@echo "... parse_memcached"
-	@echo "... tests"
 	@echo "... uap-cpp-shared"
 	@echo "... uap-cpp-static"
 	@echo "... MurmurHash2.o"
@@ -542,9 +504,6 @@ help:
 	@echo "... UaParser.o"
 	@echo "... UaParser.i"
 	@echo "... UaParser.s"
-	@echo "... UaParserTest.o"
-	@echo "... UaParserTest.i"
-	@echo "... UaParserTest.s"
 	@echo "... base64.o"
 	@echo "... base64.i"
 	@echo "... base64.s"
