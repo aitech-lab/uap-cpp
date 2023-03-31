@@ -224,7 +224,7 @@ inline void parse_ua(
     
     key_ss
         // << "\t" << ua_hash
-        << ua_hash
+        << "\t" << ua_hash
         << "\t" << ua_chars_hash
         << "\t" << ua_digits_hash
     ;
@@ -276,10 +276,11 @@ inline void parse_line(
     }
     if(tokens.size()==6) tokens.push_back("");
     if(tokens.size()!=7) return;
-    
-    value_ss   << tokens[0]  // uuid
-       << "\t" << tokens[1]  // ts
-       << "\t" << tokens[2]; // uuid
+
+    key_ss         << tokens[1]  // ts
+           << "\t" << tokens[0]; // uuid
+    value_ss   
+       << "\t" << tokens[2]; // PIXEL
     
     parse_ua  (key_ss, value_ss, tokens[4]);
     parse_json(key_ss, value_ss, tokens[5]);
@@ -303,11 +304,11 @@ inline void process_stream(istream& st) {
         try {
             parse_line(key_ss, value_ss, line);
             string value = value_ss.str();
-            // size_t value_size = value.size() * sizeof(std::string::value_type);
+            size_t value_size = value.size() * sizeof(std::string::value_type);
             // set key flags exptime bytes [noreply] 
             // value 
             // set key_1 0 86400 5\r\nabcde\r\n'
-            cout << key_ss.str() << "\t" << value << "\n";
+            cout << key_ss.str() << "\t" << value_size << "\t" << value << "\n";
         }
         catch (const exception &exc) {
             cerr << exc.what() << endl;
