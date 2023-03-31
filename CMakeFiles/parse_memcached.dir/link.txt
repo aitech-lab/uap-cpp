@@ -1,1 +1,0 @@
-/usr/bin/c++  -std=c++17 -Wall -Werror -fPIC -O3 -DNDEBUG CMakeFiles/parse_memcached.dir/parse_memcached.cpp.o CMakeFiles/parse_memcached.dir/base64.cpp.o CMakeFiles/parse_memcached.dir/MurmurHash2.cpp.o -o parse_memcached  libuaparser_cpp.a -lre2 /usr/lib/libyaml-cpp.so.0.7.0 -lpthread -lz 

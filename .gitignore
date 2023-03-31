@@ -133,3 +133,4 @@ CMakeCache.txt
 cmake_install.cmake
 parse
 UaParserBench
+CMakeFiles/
