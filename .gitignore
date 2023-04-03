@@ -135,3 +135,5 @@ parse
 UaParserBench
 CMakeFiles/
 generate_buckets
+Makefile
+parse_memcached

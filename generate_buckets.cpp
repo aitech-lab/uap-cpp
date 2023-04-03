@@ -343,7 +343,7 @@ inline void process_stream(istream& st) {
         try {
             parse_line(key, value_ss, line);
             string value = value_ss.str();
-            size_t value_size = value.size() * sizeof(std::string::value_type);
+            // size_t value_size = value.size() * sizeof(std::string::value_type);
             // set key flags exptime bytes [noreply] 
             // value 
             // set key_1 0 86400 5\r\nabcde\r\n'
