@@ -284,7 +284,8 @@ inline void parse_line(
 
     key_ss         << tokens[1]  // ts
            << "\t" << tokens[0]; // uuid
-    value_ss << tokens[2]; // PIXEL
+    value_ss   
+       << "\t" << tokens[2]; // PIXEL
     
     parse_ua  (key_ss, value_ss, tokens[4]);
     parse_json(key_ss, value_ss, tokens[5]);
