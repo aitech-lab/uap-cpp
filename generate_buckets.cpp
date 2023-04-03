@@ -105,7 +105,7 @@ void url::parse(const string& url_s) {
 
 
 inline void parse_header(
-    stringstream& key_ss, 
+    vector<string>& key,
     stringstream& value_ss, 
     json header) {
 	// parse and allocate url object.
@@ -116,7 +116,7 @@ inline void parse_header(
 
 
 inline void parse_fp(
-    stringstream& key_ss,
+    vector<string>& key,
     stringstream& value_ss,
     json fp) {
 
@@ -174,20 +174,25 @@ inline void parse_fp(
     string unstable_hash = unstable_hash_ss.str();
     fp_unstable_hash = MurmurHash2(unstable_hash.data(), unstable_hash.size(), SEED);
 
-    key_ss << "\t" << fp_hash;
-    key_ss << "\t" << fp_stable_hash;
-    key_ss << "\t" << fp_unstable_hash;
+    key.push_back(to_string(fp_hash));
+    key.push_back(to_string(fp_stable_hash));
+    key.push_back(to_string(fp_unstable_hash));
     
-    for(double   v : c0) value_ss << "\t" << v;
-    for(int32_t  v : c1) value_ss << "\t" << v;
-    for(uint32_t v : c2) value_ss << "\t" << v;
-    for(uint8_t  v : c3) value_ss << "\t" << unsigned(v);
+    value_ss << "\t" << c[0];
+    value_ss << "\t" << c[1];
+    value_ss << "\t" << c[2];
+    value_ss << "\t" << c[3];
+
+    // for(double   v : c0) value_ss << "\t" << v;
+    // for(int32_t  v : c1) value_ss << "\t" << v;
+    // for(uint32_t v : c2) value_ss << "\t" << v;
+    // for(uint8_t  v : c3) value_ss << "\t" << unsigned(v);
 
 }
 
 
 inline void parse_json(
-    stringstream& key_ss, 
+    vector<string>& key, 
     stringstream& value_ss, 
     string data) {
     
@@ -204,20 +209,20 @@ inline void parse_json(
 
     j = json::parse(data);
     if (!j["err"].is_string()) {
-        parse_header(key_ss, value_ss, j["_http_headers"]);
-        parse_fp    (key_ss, value_ss, j["fp"]);
+        parse_header(key, value_ss, j["_http_headers"]);
+        parse_fp    (key, value_ss, j["fp"]);
     } else {
-        parse_header(key_ss, value_ss, j["_http_headers"]);
-        key_ss << "\t" << 0; // fp_hash;
-        key_ss << "\t" << 0; // fp_stable_hash;
-        key_ss << "\t" << 0; // fp_unstable_hash;
+        parse_header(key, value_ss, j["_http_headers"]);
+        key.push_back("0"); // fp_hash;
+        key.push_back("0"); // fp_stable_hash;
+        key.push_back("0"); // fp_unstable_hash;
     } 
 
 }
 
 
 inline void parse_ua(
-    stringstream& key_ss, 
+    vector<string>& key, 
     stringstream& value_ss, 
     string data) {
 
@@ -227,11 +232,9 @@ inline void parse_ua(
     string ua_digits = regex_replace(data, regex("[^0-9]*"), "");
     uint32_t ua_digits_hash = MurmurHash2(ua_digits.data(), ua_digits.size(), SEED);
     
-    key_ss
-        << "\t" << ua_hash
-        << "\t" << ua_chars_hash
-        << "\t" << ua_digits_hash
-    ;
+    key.push_back(to_string(ua_hash));
+    key.push_back(to_string(ua_chars_hash));
+    key.push_back(to_string(ua_digits_hash));
 
     auto ua = uap.parse(data);
     
@@ -252,20 +255,20 @@ inline void parse_ua(
 }
 
 inline void parse_ip(
-    stringstream& key_ss, 
+    vector<string>& key, 
     stringstream& value_ss, 
     string ip) {
     
     string net24 = regex_replace(ip, regex("\\.\\d*$"), ".0");
     string net16 = regex_replace(ip, regex("\\.\\d+\\.\\d+$"), ".0.0");
-    key_ss << "\t" << ip;
-    key_ss << "\t" << net24;
-    key_ss << "\t" << net16;
+    key.push_back(ip);
+    key.push_back(net24);
+    key.push_back(net16);
 
 }
 
 inline void parse_line(
-    stringstream& key_ss, 
+    vector<string>& key, 
     stringstream& value_ss, 
     string line) {
 
@@ -281,37 +284,70 @@ inline void parse_line(
     if(tokens.size()==6) tokens.push_back("");
     if(tokens.size()!=7) return;
 
-    key_ss         << tokens[1]  // ts
-           << "\t" << tokens[0]; // uuid
-    value_ss   
-       << "\t" << tokens[2]; // PIXEL
+    value_ss << tokens[0]; // uuid
+    // value_ss << tokens[1]; // TS
+    value_ss << "\t" << tokens[2]; // PIXEL
     
-    parse_ua  (key_ss, value_ss, tokens[4]);
-    parse_json(key_ss, value_ss, tokens[5]);
+    parse_ua  (key, value_ss, tokens[4]);
+    parse_json(key, value_ss, tokens[5]);
     value_ss << "\t" << tokens[6];
 
-    // key_ss << "\t" << tokens[3]; // ip
-    parse_ip(key_ss, value_ss, tokens[3]);
+    parse_ip(key, value_ss, tokens[3]);
 
 }
 
+// maximum radix - base
+std::string int2string(unsigned int value, unsigned int radix) {
+    // !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+    // 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
+    // 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+    const char base[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    std::string result;
+    while (value > 0) {
+        unsigned int remainder = value % radix;
+        value /= radix;
+        result.insert(result.begin(), base[remainder]);
+    }
+    return result;
+}
+
+// hashes from permutation of cols
+inline void generate_bucket_hashes(
+    vector<string>& key, 
+    stringstream& key_ss) {
+
+    for(int i=0; i<3; i++) {
+        for(int j=0; j<3; j++) {
+            for(int k=0; k<3; k++) {
+
+                stringstream _key_ss;
+                _key_ss << key[i] << "," << key[3+j] << "," << key[6+k];
+                string _key = _key_ss.str();
+                uint32_t _key_hash = MurmurHash2(_key.data(), _key.size(), SEED);
+                
+                // output
+                if (i>0||j>0||k>0) key_ss<<"\t";
+                key_ss << int2string(_key_hash,62);
+            }
+        }
+    }
+}
 
 inline void process_stream(istream& st) {
     for(string line; getline(st, line);) {
-        stringstream 
-            key_ss, 
-            value_ss;
+        vector<string> key;
+        stringstream key_ss, value_ss;
 
-        key_ss   << setprecision(17);
         value_ss << setprecision(17);
         
         try {
-            parse_line(key_ss, value_ss, line);
+            parse_line(key, value_ss, line);
             string value = value_ss.str();
             size_t value_size = value.size() * sizeof(std::string::value_type);
             // set key flags exptime bytes [noreply] 
             // value 
             // set key_1 0 86400 5\r\nabcde\r\n'
+            generate_bucket_hashes(key, key_ss);
             cout << key_ss.str() << "\t" << value_size << "\t" << value << "\n";
         }
         catch (const exception &exc) {
