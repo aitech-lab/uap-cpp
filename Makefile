@@ -195,6 +195,19 @@ parse_memcached/fast:
 .PHONY : parse_memcached/fast
 
 #=============================================================================
+# Target rules for targets named generate_buckets
+
+# Build rule for target.
+generate_buckets: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 generate_buckets
+.PHONY : generate_buckets
+
+# fast build rule for target.
+generate_buckets/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generate_buckets.dir/build.make CMakeFiles/generate_buckets.dir/build
+.PHONY : generate_buckets/fast
+
+#=============================================================================
 # Target rules for targets named parse-dur
 
 # Build rule for target.
@@ -214,6 +227,7 @@ MurmurHash2.o: MurmurHash2.cpp.o
 MurmurHash2.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse.dir/build.make CMakeFiles/parse.dir/MurmurHash2.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse_memcached.dir/build.make CMakeFiles/parse_memcached.dir/MurmurHash2.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generate_buckets.dir/build.make CMakeFiles/generate_buckets.dir/MurmurHash2.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse-dur.dir/build.make CMakeFiles/parse-dur.dir/MurmurHash2.cpp.o
 .PHONY : MurmurHash2.cpp.o
 
@@ -224,6 +238,7 @@ MurmurHash2.i: MurmurHash2.cpp.i
 MurmurHash2.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse.dir/build.make CMakeFiles/parse.dir/MurmurHash2.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse_memcached.dir/build.make CMakeFiles/parse_memcached.dir/MurmurHash2.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generate_buckets.dir/build.make CMakeFiles/generate_buckets.dir/MurmurHash2.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse-dur.dir/build.make CMakeFiles/parse-dur.dir/MurmurHash2.cpp.i
 .PHONY : MurmurHash2.cpp.i
 
@@ -234,6 +249,7 @@ MurmurHash2.s: MurmurHash2.cpp.s
 MurmurHash2.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse.dir/build.make CMakeFiles/parse.dir/MurmurHash2.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse_memcached.dir/build.make CMakeFiles/parse_memcached.dir/MurmurHash2.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generate_buckets.dir/build.make CMakeFiles/generate_buckets.dir/MurmurHash2.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse-dur.dir/build.make CMakeFiles/parse-dur.dir/MurmurHash2.cpp.s
 .PHONY : MurmurHash2.cpp.s
 
@@ -268,6 +284,7 @@ base64.o: base64.cpp.o
 base64.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse.dir/build.make CMakeFiles/parse.dir/base64.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse_memcached.dir/build.make CMakeFiles/parse_memcached.dir/base64.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generate_buckets.dir/build.make CMakeFiles/generate_buckets.dir/base64.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse-dur.dir/build.make CMakeFiles/parse-dur.dir/base64.cpp.o
 .PHONY : base64.cpp.o
 
@@ -278,6 +295,7 @@ base64.i: base64.cpp.i
 base64.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse.dir/build.make CMakeFiles/parse.dir/base64.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse_memcached.dir/build.make CMakeFiles/parse_memcached.dir/base64.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generate_buckets.dir/build.make CMakeFiles/generate_buckets.dir/base64.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse-dur.dir/build.make CMakeFiles/parse-dur.dir/base64.cpp.i
 .PHONY : base64.cpp.i
 
@@ -288,6 +306,7 @@ base64.s: base64.cpp.s
 base64.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse.dir/build.make CMakeFiles/parse.dir/base64.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse_memcached.dir/build.make CMakeFiles/parse_memcached.dir/base64.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generate_buckets.dir/build.make CMakeFiles/generate_buckets.dir/base64.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parse-dur.dir/build.make CMakeFiles/parse-dur.dir/base64.cpp.s
 .PHONY : base64.cpp.s
 
@@ -314,6 +333,30 @@ benchmarks/UaParserBench.s: benchmarks/UaParserBench.cpp.s
 benchmarks/UaParserBench.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench.dir/build.make CMakeFiles/bench.dir/benchmarks/UaParserBench.cpp.s
 .PHONY : benchmarks/UaParserBench.cpp.s
+
+generate_buckets.o: generate_buckets.cpp.o
+.PHONY : generate_buckets.o
+
+# target to build an object file
+generate_buckets.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generate_buckets.dir/build.make CMakeFiles/generate_buckets.dir/generate_buckets.cpp.o
+.PHONY : generate_buckets.cpp.o
+
+generate_buckets.i: generate_buckets.cpp.i
+.PHONY : generate_buckets.i
+
+# target to preprocess a source file
+generate_buckets.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generate_buckets.dir/build.make CMakeFiles/generate_buckets.dir/generate_buckets.cpp.i
+.PHONY : generate_buckets.cpp.i
+
+generate_buckets.s: generate_buckets.cpp.s
+.PHONY : generate_buckets.s
+
+# target to generate assembly for a file
+generate_buckets.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generate_buckets.dir/build.make CMakeFiles/generate_buckets.dir/generate_buckets.cpp.s
+.PHONY : generate_buckets.cpp.s
 
 internal/AlternativeExpander.o: internal/AlternativeExpander.cpp.o
 .PHONY : internal/AlternativeExpander.o
@@ -492,6 +535,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... bench"
+	@echo "... generate_buckets"
 	@echo "... objlib"
 	@echo "... parse"
 	@echo "... parse-dur"
@@ -510,6 +554,9 @@ help:
 	@echo "... benchmarks/UaParserBench.o"
 	@echo "... benchmarks/UaParserBench.i"
 	@echo "... benchmarks/UaParserBench.s"
+	@echo "... generate_buckets.o"
+	@echo "... generate_buckets.i"
+	@echo "... generate_buckets.s"
 	@echo "... internal/AlternativeExpander.o"
 	@echo "... internal/AlternativeExpander.i"
 	@echo "... internal/AlternativeExpander.s"
