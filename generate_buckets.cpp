@@ -348,7 +348,8 @@ inline void process_stream(istream& st) {
             // value 
             // set key_1 0 86400 5\r\nabcde\r\n'
             generate_bucket_hashes(key, key_ss);
-            cout << key_ss.str() << "\t" << value_size << "\t" << value << "\n";
+            // cout << key_ss.str() << "\t" << value_size << "\t" << value << "\n";
+            cout << key_ss.str() << "\t" << value << "\n";
         }
         catch (const exception &exc) {
             cerr << exc.what() << endl;
