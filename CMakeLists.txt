@@ -59,10 +59,13 @@ add_executable(parse parse.cpp base64.cpp MurmurHash2.cpp)
 target_link_libraries(parse uap-cpp-static re2 yaml-cpp pthread z)
 
 add_executable(parse_memcached parse_memcached.cpp base64.cpp MurmurHash2.cpp)
-target_link_libraries(parse_memcached uap-cpp-static re2 yaml-cpp pthread z)
+target_link_libraries(parse_memcached uap-cpp-static libre2.a yaml-cpp pthread z)
 
 add_executable(generate_buckets generate_buckets.cpp base64.cpp MurmurHash2.cpp)
-target_link_libraries(generate_buckets uap-cpp-static re2 yaml-cpp pthread z)
+target_link_libraries(generate_buckets uap-cpp-static libre2.a yaml-cpp pthread z)
+
+add_executable(generate_buckets_2 generate_buckets_2.cpp base64.cpp MurmurHash2.cpp)
+target_link_libraries(generate_buckets_2 uap-cpp-static libre2.a yaml-cpp pthread z)
 
 add_executable(parse-dur parse-dur.cpp base64.cpp MurmurHash2.cpp)
 target_link_libraries(parse-dur uap-cpp-static re2 yaml-cpp pthread z)
