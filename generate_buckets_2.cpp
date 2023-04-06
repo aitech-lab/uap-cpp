@@ -126,7 +126,7 @@ inline void parse_fp(
     // c1 = unpack("i", comps[1]) // signed int
     // c2 = unpack("I", comps[2]) // unsigned int 
     // c3 = unpack("B", comps[3]) // unsigned byte
-    json c = fp["components"];
+    json c = fp;
 
     uint32_t 
         fp_hash=0, 
@@ -144,7 +144,7 @@ inline void parse_fp(
     memcpy(c0, s.data(), s.size());
     memcpy(c0_stable, s.data(), s.size());
     // reset unstable metrics
-    for (int&i : metrics_v01::fp_unstable_block_0) c0_stable[i] = 0.0;
+    for (int&i : metrics_v02::fp_unstable_block_0) c0_stable[i] = 0.0;
     fp_stable_hash = fp_stable_hash ^ MurmurHash2(&c0_stable, sizeof(c0_stable), SEED);
 
     s = base64_decode(c[1]);
@@ -160,7 +160,7 @@ inline void parse_fp(
     memcpy(c2, s.data(), s.size());
     memcpy(c2_stable, s.data(), s.size());
     // reset unstable metrics
-    for (int&i : metrics_v01::fp_unstable_block_2) c2_stable[i]=0;
+    for (int&i : metrics_v02::fp_unstable_block_2) c2_stable[i]=0;
     fp_stable_hash = fp_stable_hash ^ MurmurHash2(&c2_stable, sizeof(c2_stable), SEED);
 
     s = base64_decode(c[3]);
@@ -169,8 +169,8 @@ inline void parse_fp(
     memcpy(c3, s.data(), s.size());
         
     stringstream unstable_hash_ss;
-    for (int&i : metrics_v01::fp_unstable_block_0) unstable_hash_ss << c0[i] << ",";
-    for (int&i : metrics_v01::fp_unstable_block_2) unstable_hash_ss << c2[i] << ",";
+    for (int&i : metrics_v02::fp_unstable_block_0) unstable_hash_ss << c0[i] << ",";
+    for (int&i : metrics_v02::fp_unstable_block_2) unstable_hash_ss << c2[i] << ",";
     string unstable_hash = unstable_hash_ss.str();
     fp_unstable_hash = MurmurHash2(unstable_hash.data(), unstable_hash.size(), SEED);
 
@@ -210,7 +210,7 @@ inline void parse_json(
     j = json::parse(data);
     if (!j["err"].is_string()) {
         parse_header(key, value_ss, j["_http_headers"]);
-        parse_fp    (key, value_ss, j["fp"]);
+        parse_fp    (key, value_ss, j["data"]);
     } else {
         parse_header(key, value_ss, j["_http_headers"]);
         key.push_back("0"); // fp_hash;
