@@ -178,11 +178,11 @@ inline void parse_fp(
     key.push_back(to_string(fp_stable_hash));
     key.push_back(to_string(fp_unstable_hash));
     
-    value_ss << "\t" << c[0];
-    value_ss << "\t" << c[1];
-    value_ss << "\t" << c[2];
-    value_ss << "\t" << c[3];
-
+    value_ss << "\t" << (string) c[0];
+    value_ss << "\t" << (string) c[1];
+    value_ss << "\t" << (string) c[2];
+    value_ss << "\t" << (string) c[3];
+    
     // for(double   v : c0) value_ss << "\t" << v;
     // for(int32_t  v : c1) value_ss << "\t" << v;
     // for(uint32_t v : c2) value_ss << "\t" << v;
