@@ -22,7 +22,9 @@ set(LIB_SOURCES
 find_package(yaml-cpp REQUIRED)
 include_directories(${YAML_CPP_INCLUDE_DIR})
 
-find_package(re2)
+
+# find_package(re2)
+# add_subdirectory(re2)
 
 # this is the "object library" target: compiles the sources only once
 add_library(objlib OBJECT ${LIB_SOURCES})
@@ -47,28 +49,30 @@ set_target_properties(uap-cpp-shared PROPERTIES OUTPUT_NAME uaparser_cpp)
 
 
 
-set(BENCH_SOURCES benchmarks/UaParserBench.cpp)
-set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
-
-add_executable(bench ${BENCH_SOURCES} $<TARGET_OBJECTS:objlib>)
-set_target_properties(bench PROPERTIES OUTPUT_NAME UaParserBench)
-
-target_link_libraries(bench re2 yaml-cpp pthread)
+# set(BENCH_SOURCES benchmarks/UaParserBench.cpp)
+# set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
+# 
+# add_executable(bench ${BENCH_SOURCES} $<TARGET_OBJECTS:objlib>)
+# set_target_properties(bench PROPERTIES OUTPUT_NAME UaParserBench)
+# target_link_libraries(bench re2 yaml-cpp pthread)
 
 add_executable(parse parse.cpp base64.cpp MurmurHash2.cpp)
 target_link_libraries(parse uap-cpp-static re2 yaml-cpp pthread z)
 
 add_executable(parse_memcached parse_memcached.cpp base64.cpp MurmurHash2.cpp)
-target_link_libraries(parse_memcached uap-cpp-static libre2.a yaml-cpp pthread z)
+target_link_libraries(parse_memcached uap-cpp-static re2 yaml-cpp pthread z)
+
+add_executable(parse_client parse_client.cpp base64.cpp MurmurHash2.cpp)
+target_link_libraries(parse_client uap-cpp-static re2 yaml-cpp pthread z)
 
 add_executable(generate_buckets generate_buckets.cpp base64.cpp MurmurHash2.cpp)
-target_link_libraries(generate_buckets uap-cpp-static libre2.a yaml-cpp pthread z)
+target_link_libraries(generate_buckets uap-cpp-static re2 yaml-cpp pthread z)
 
 add_executable(generate_buckets_2 generate_buckets_2.cpp base64.cpp MurmurHash2.cpp)
-target_link_libraries(generate_buckets_2 uap-cpp-static libre2.a yaml-cpp pthread z)
+target_link_libraries(generate_buckets_2 uap-cpp-static re2 yaml-cpp pthread z)
 
 add_executable(extract_fields extract_fields.cpp base64.cpp MurmurHash2.cpp)
-target_link_libraries(extract_fields uap-cpp-static libre2.a yaml-cpp pthread z)
+target_link_libraries(extract_fields uap-cpp-static re2 yaml-cpp pthread z)
 
 add_executable(parse-dur parse-dur.cpp base64.cpp MurmurHash2.cpp)
 target_link_libraries(parse-dur uap-cpp-static re2 yaml-cpp pthread z)
